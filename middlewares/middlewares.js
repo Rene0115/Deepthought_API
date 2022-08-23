@@ -18,7 +18,6 @@ const middleware = (app) => {
     res.status(200).send('Server is Running Check API docs');
   });
   app.use(errorHandler);
-  app.use('/api/v3/app', router);
 };
 
 export default middleware;
