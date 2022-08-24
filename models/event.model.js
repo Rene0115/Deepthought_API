@@ -9,9 +9,13 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  schedule:{
+  schedule: {
     type: String,
     required: true
   }
 
-} { timestamps: true});
+}, { timestamps: true });
+
+const eventModel = mongoose.model('Event', eventSchema);
+
+export default eventModel;
