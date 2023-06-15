@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import express from 'express';
 import userRouter from './user.routes.js';
 import eventRouter from './events.routes.js';
