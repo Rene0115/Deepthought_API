@@ -4,13 +4,13 @@ import { MongoClient } from 'mongodb'
 dotenv.config();
 
 const url = process.env.MONGODB_URI;
-const client = new MongoClient(url);
+export const client = new MongoClient(url);
 
 
 
 const database = async () => {
   await client.connect();
-  logger.info('Connected successfully to server');
+  logger.info('Connected to database');
 };
 
 export default database;
