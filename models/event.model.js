@@ -1,16 +1,32 @@
-import { client } from "../config/db.config.js";
-
+import logger from "../app.js";
+import dotenv from "dotenv";
+import { collection } from "../config/db.config.js";
+dotenv.config();
 class EventModel {
   async save(document) {
     try {
-      const database = client.db("Deepthought_API");
-      const collectionName = "Events";
-      const collection = database.collection(collectionName);
-      await collection.insertOne(document);
+      const event = await collection.insertOne(document);
+      return event;
     } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
+      return logger.error(error);
     }
   }
+  async findById(id) {
+    try {
+      const events = await collection.find({}).toArray();
+      const newEvents = events.filter(event => event._id.toString() === id);
+      const eventData = newEvents.map(event => {
+        event._id = event._id.toString();
+        return event;
+      });
+  
+      console.log(eventData);
+      return eventData;
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+  
 }
 
 export default new EventModel();
