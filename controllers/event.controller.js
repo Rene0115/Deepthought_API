@@ -1,4 +1,4 @@
-import EventModel from "../models/event.model.js";
+import EventModel from "../models/event.services.js";
 
 class EventController {
   async create(req, res) {
@@ -34,6 +34,12 @@ class EventController {
     }
     try {
       const event = await EventModel.findById(id);
+      if (event.length < 1) {
+        return res.status(404).send({
+          success: true,
+          message: "Event with this id does not exist"
+        });
+      }
       return res.status(200).send({
         success: true,
         data: event
@@ -43,6 +49,28 @@ class EventController {
       return res.status(400).send({
         success: false,
         error: error.message
+      });
+    }
+  }
+  async deleteById(req, res) {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        return res.status(400).send({
+          success: false,
+          message: "Cannot perform operation without id"
+        });
+      }
+      const deletedEvent = EventModel.deletebyId(id);
+      return res.status(200).send({
+        success: true,
+        message: "Event deleted"
+      });
+    } catch (err) {
+      logger.error(err);
+      return res.status(400).send({
+        success: false,
+        error: err.message
       });
     }
   }

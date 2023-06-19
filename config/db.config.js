@@ -1,11 +1,16 @@
 import dotenv from "dotenv";
 import logger from "../app.js";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 dotenv.config();
 
+export const objectid = (id) =>{
+   const newId = new ObjectId(id);
+   return newId
+}
 const url = process.env.MONGODB_URI;
 const client = new MongoClient(url);
 export let collection;
+
 
 const database = async () => {
   await client.connect();
