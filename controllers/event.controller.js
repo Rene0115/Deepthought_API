@@ -1,4 +1,4 @@
-import EventModel from "../models/event.services.js";
+import EventServices from "../services/event.services.js";
 
 class EventController {
   async create(req, res) {
@@ -10,7 +10,7 @@ class EventController {
       });
     }
     try {
-      const event = await EventModel.save(data);
+      const event = await EventServices.save(data);
 
       return res.status(200).send({
         success: true,
@@ -33,7 +33,7 @@ class EventController {
       });
     }
     try {
-      const event = await EventModel.findById(id);
+      const event = await EventServices.findById(id);
       if (event.length < 1) {
         return res.status(404).send({
           success: true,
@@ -61,7 +61,7 @@ class EventController {
           message: "Cannot perform operation without id"
         });
       }
-      const deletedEvent = EventModel.deletebyId(id);
+      const deletedEvent = EventServices.deletebyId(id);
       return res.status(200).send({
         success: true,
         message: "Event deleted"
@@ -71,6 +71,30 @@ class EventController {
       return res.status(400).send({
         success: false,
         error: err.message
+      });
+    }
+  }
+  async updateById(req, res) {
+    try {
+      const id = req.params.id;
+      const data = req.body;
+      console.log(data);
+      if (!id) {
+        return res.status(400).send({
+          success: false,
+          message: "Cannot perform operation without id"
+        });
+      }
+      const newEvent = await EventServices.updateById(id, data);
+      return res.status(200).send({
+        success: true,
+        updatedEvent: newEvent
+      });
+    } catch (error) {
+      logger.error(error);
+      return res.status(400).send({
+        success: false,
+        error: error
       });
     }
   }

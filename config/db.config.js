@@ -17,7 +17,6 @@ const database = async () => {
   const database = client.db(process.env.DATABASE_NAME);
   const collectionName = process.env.COLLECTION_NAME;
   collection = database.collection(collectionName);
-
   logger.info("Connected to database");
 };
 
