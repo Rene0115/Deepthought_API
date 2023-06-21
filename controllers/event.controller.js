@@ -1,3 +1,4 @@
+import logger from "../app.js";
 import EventServices from "../services/event.services.js";
 
 class EventController {
@@ -28,10 +29,21 @@ class EventController {
   async getById(req, res) {
     const id = req.query.id;
     if (!id) {
-      return res.status(400).send({
-        message: "No id provided"
-      });
-    }
+      const { type, limit, page } = req.query;
+      try {
+        const events = await EventServices.findPaginated(type, limit, page);
+        return res.status(200).send({
+          success: true,
+          data: events
+        });
+      } catch (err) {
+        logger.error(err);
+        return res.status(400).send({
+          success: false,
+          error: err.message
+        });
+      }
+      }
     try {
       const event = await EventServices.findById(id);
       if (event.length < 1) {
@@ -78,7 +90,6 @@ class EventController {
     try {
       const id = req.params.id;
       const data = req.body;
-      console.log(data);
       if (!id) {
         return res.status(400).send({
           success: false,
@@ -92,11 +103,12 @@ class EventController {
       });
     } catch (error) {
       logger.error(error);
-      return res.status(400).send({
+      return res.status(error.status || error.statusCode || 400).send({
         success: false,
         error: error
       });
     }
   }
+
 }
 export default new EventController();

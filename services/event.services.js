@@ -52,11 +52,36 @@ class EventServices {
             document[key] = data[key];
           }
         }
-        const newDocument = await collection.replaceOne({ _id: newid }, document);
+        await collection.replaceOne({ _id: newid }, document, {
+          returnDocument: "after"
+        });
+        const newDocument = await collection.findOne({ _id: newid });
         return newDocument;
       }
     } catch (error) {
-     return logger.error(error);
+      return logger.error(error);
+    }
+  }
+  async findPaginated(type, limit, page) {
+    const eventsPerPage = 5;
+    const lim = parseInt(limit < 1 ? 5 : limit);
+    const pag = parseInt(page || 0);
+
+    try {
+      const events = await collection
+        .find()
+        .sort({ _id: -1 })  // LIFO order
+        .skip(pag * eventsPerPage) // a page is 5 events to skip a page is to skip first 5 events
+        .limit(lim)
+        .toArray();
+      
+      const eventData = events.map((event) => {
+        event._id = event._id.toString();
+        return event;
+      });
+      return eventData;
+    } catch (error) {
+      return logger.error(error);
     }
   }
 }
